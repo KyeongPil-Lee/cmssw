@@ -390,7 +390,33 @@ void TagProbeFitter::doFitEfficiency(RooWorkspace* w, string pdfName, RooRealVar
     const RooArgSet *dataObs = data->get(0); 
     // remove everything which is not a dependency of the pdf
     RooArgSet *obs = w->pdf("simPdf")->getObservables(dataObs);
-    bdata.reset(new RooDataHist("data_binned", "data_binned", *obs, *data)); 
+    bdata.reset(new RooDataHist("data_binned", "data_binned", *obs, *data));
+
+    // -- remove negative bins (due to negative weights from NLO MC)
+    for(int i=0; i<bdata->numEntries(); i++)
+    {
+      const RooArgSet *argSet = bdata->get(i);
+      if( bdata->weight() < 0 )
+      {
+        cout << "[TagProbeFitter::doFitEfficiency] " 
+             << i << "th bin has negative value = " 
+             << bdata->weight() << " -> set as 0" << endl;
+        // bdata->set(0);
+        // bdata->set(*argSet, 0.0, 0.0, 0.0); // -- errors are not changed with this method... why?
+        bdata->set(*argSet, 0.0, 0.0); // -- set both bin content & error are set to 0
+      }
+    }
+    cout << endl;
+
+    for(int i=0; i<bdata->numEntries(); i++)
+    {
+      bdata->get(i);
+      cout << "[TagProbeFitter::doFitEfficiency] " 
+           << i << "th bin weight = " 
+           << bdata->weight() << endl;
+    }
+    cout << endl;
+
     w->import(*bdata);
     data = w->data("data_binned");
     delete obs;
