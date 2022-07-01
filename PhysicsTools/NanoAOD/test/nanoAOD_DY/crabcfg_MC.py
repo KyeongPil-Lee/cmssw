@@ -94,7 +94,7 @@ if __name__ == '__main__':
     crabCommand('submit', config = config)
 
     config.General.requestName = 'WWTo2L2Nu_Powheg'
-    config.Data.inputDataset = '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16NanoAODAPVv9-106X_mcRun2_asymptotic_preVFP_v11-v1/NANOAODSIM'
+    config.Data.inputDataset = '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'
     crabCommand('submit', config = config)
 
 
