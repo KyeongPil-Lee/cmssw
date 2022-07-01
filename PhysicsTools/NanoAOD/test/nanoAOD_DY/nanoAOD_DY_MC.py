@@ -99,15 +99,15 @@ from PhysicsTools.NanoAOD.customizer_nanoAOD_DY import *
 process = customizer_nanoAOD_DY(process)
 
 # -- for test
-for sel_mu in process.triggerObjectTable.selections:
-        if sel_mu.name=='Muon':
-                print sel_mu.qualityBits
-                print sel_mu.qualityBitsDoc
+# for sel_mu in process.triggerObjectTable.selections:
+#         if sel_mu.name=='Muon':
+#                 print sel_mu.qualityBits
+#                 print sel_mu.qualityBitsDoc
 
 # -- data
 # process.source.fileNames = cms.untracked.vstring('/store/data/Run2016B/SingleMuon/MINIAOD/ver1_HIPM_UL2016_MiniAODv2-v2/130000/E98AD37F-E517-7F4B-9116-009270CA516E.root')
 # process.maxEvents.input = cms.untracked.int32(1000)
 
 # -- MC
-process.source.fileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL16MiniAODAPVv2/DYJetsToMuMu_M-50_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/120000/00EBA49A-0E2F-DA4A-80AE-4DCED9F2F48E.root')
-process.maxEvents.input = cms.untracked.int32(10000)
+# process.source.fileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL16MiniAODAPVv2/DYJetsToMuMu_M-50_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/120000/00EBA49A-0E2F-DA4A-80AE-4DCED9F2F48E.root')
+# process.maxEvents.input = cms.untracked.int32(10000)
