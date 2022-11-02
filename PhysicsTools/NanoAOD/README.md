@@ -53,6 +53,11 @@ python CRAB_Status.py CRABDir
 
 
 ## How the configuration is made (2018 MC)
+* Reference
+   * https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Instructions/Private-production
+   * `${GT}` = 106X_upgrade2018_realistic_v16_L1v1, `${ERA}` = Run2_2018,run2_nanoAOD_106Xv2
+      * from example configuration: https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_test/TAU-RunIISummer20UL18NanoAODv9-00001
+
 1) Get the configuration for the official production
 ```
 export SCRAM_ARCH=slc7_amd64_gcc700
