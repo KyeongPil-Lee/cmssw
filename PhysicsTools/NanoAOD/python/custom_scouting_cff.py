@@ -17,11 +17,6 @@ def customize_add_scouting(process):
     # print process.nanoSequenceCommon
     # print process.nanoAOD_step
 
-    # -- skip events without a product
-    # -- due to scouting dimuon vertex: it sometimes doesn't exist in some events
-    # process.options.SkipEvent = cms.untracked.vstring('ProductNotFound')
-    # print "[customize_add_scouting:Warning] SkipEvent = cms.untracked.vstring('ProductNotFound') is turned on"
-
     return process
 
 
@@ -43,7 +38,6 @@ def customize_triggerObj_add_scouting(process):
                 l2seed_new = l2seed_new.replace("coll('hltL2MuonCandidates')", "(coll('hltL2MuonCandidates') || coll('hltL2MuonCandidatesNoVtx'))")
 
                 qualityBits_new = qualityBits_old + " + 4096*filter('hltDoubleMu3L3FilteredNoVtx')" # -- hltDoubleMu3L3FilteredNoVtx* = hltDoubleMu3L3FilteredNoVtx or hltDoubleMu3L3FilteredNoVtxMass10. No *
-                # qualityBits_new = qualityBits_old + " + 4096*filter('hltL3crIso*Filtered0p07')"
                 qualityBitsDoc_new = qualityBitsDoc_old + ", 4096 = 2mu (DoubleMu3)"
 
                 selectionSets[index].sel = cms.string(sel_new)
@@ -51,7 +45,7 @@ def customize_triggerObj_add_scouting(process):
                 selectionSets[index].qualityBits = cms.string(qualityBits_new)
                 selectionSets[index].qualityBitsDoc = cms.string(qualityBitsDoc_new)
 
-                print sel_new
+                # print sel_new
                 # print l2seed_new
                 # print qualityBits_new
                 # print qualityBitsDoc_new
