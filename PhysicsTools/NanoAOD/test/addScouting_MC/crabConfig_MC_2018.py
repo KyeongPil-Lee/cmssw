@@ -12,7 +12,8 @@ config.Data.inputDataset = ''
 config.Data.inputDBS = 'global'
 # config.Data.splitting = 'Automatic'
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 5
+# config.Data.unitsPerJob = 5 # -- too many failed due to memory problem
+config.Data.unitsPerJob = 1 # -- event per miniAOD file: ~100k -> # jobs for 1M sample: ~10
 config.Data.publication = False
 
 config.Data.useParent = True # -- scouting: in AOD
@@ -20,7 +21,7 @@ config.Data.useParent = True # -- scouting: in AOD
 config.Site.storageSite = 'T2_BE_IIHE'
 
 version = 'v01'
-config.Data.outLFNDirBase = '/store/user/kplee/NanoAOD_addScouting_MC_2018_%s' % version
+config.Data.outLFNDirBase = '/store/user/kplee/NanoAOD_SC_MC_2018_%s' % version
 
 config.JobType.allowUndistributedCMSSW = True
 
