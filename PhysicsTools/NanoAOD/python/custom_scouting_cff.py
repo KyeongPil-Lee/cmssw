@@ -13,12 +13,69 @@ def customize_add_scouting(process):
     process.load("PhysicsTools.NanoAOD.scouting_cff")
     # process.nanoSequenceCommon.insert(process.nanoSequenceCommon.index(process.isoTrackTables)+1, process.scoutingTables) # -- it does not make branches
     process.nanoAOD_step.insert(process.nanoSequenceCommon.index(process.isoTrackTables)+1, process.scoutingTables)
-    
+
+    # -- remove unncessary tables for DY analysis    
+    process = delete_tables(process)
+
+    # -- just for monitoring: should be turned off for the production
+    # process = add_monitoring_timing_memory(process)
+
     # print process.nanoSequenceCommon
     # print process.nanoAOD_step
 
     return process
 
+# -- reference: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideEDMTimingAndMemory
+def add_monitoring_timing_memory(process):
+
+    process.Timing = cms.Service("Timing",
+      summaryOnly = cms.untracked.bool(False),
+      useJobReport = cms.untracked.bool(True)
+    )
+
+    process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",
+        ignoreTotal = cms.untracked.int32(1)
+    )
+
+    return process
+
+# -- it might be better if relavant calculation modules are removed as well,
+# -- but it is hard to track all the depdendencies
+# -- (e.g. something produced in a module can be called in the other next module, like MET calculation)
+# -- therefore, just drop the table and do not touch the intermediate EDProducer modules
+def delete_tables(process):
+
+    process = delete_table(process, "fatJetTable")
+    process = delete_table(process, "saJetTable")
+    process = delete_table(process, "tauTable")
+    process = delete_table(process, "boostedTauTable")
+    process = delete_table(process, "electronTable")
+    process = delete_table(process, "lowPtElectronTable")
+    process = delete_table(process, "photonTable")
+    process = delete_table(process, "simpleCleanerTable") # -- make (obj)_cleanmask branch: not needed for us
+    process = delete_table(process, "isoTrackTable")
+    process = delete_table(process, "genJetAK8Table")
+    process = delete_table(process, "genJetAK8FlavourTable")
+    process = delete_table(process, "fatJetMCTable")
+    process = delete_table(process, "genSubJetAK8Table")
+    process = delete_table(process, "subjetMCTable")
+    process = delete_table(process, "electronMCTable")
+    process = delete_table(process, "tauMCTable")
+    process = delete_table(process, "lowPtElectronMCTable")
+    process = delete_table(process, "photonMCTable")
+    process = delete_table(process, "genVisTauTable")
+    process = delete_table(process, "boostedTauMCTable")
+    process = delete_table(process, "HTXSCategoryTable")
+    process = delete_table(process, "ttbarCategoryTable")
+
+    return process
+
+def delete_table(process, tableName):
+
+    if hasattr(process, tableName):
+        delattr(process, tableName)
+
+    return process
 
 def customize_triggerObj_add_scouting(process):
     if hasattr(process, "triggerObjectTable"):
