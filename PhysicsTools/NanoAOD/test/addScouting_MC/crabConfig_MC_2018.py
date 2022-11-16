@@ -11,16 +11,21 @@ config.Data.inputDataset = ''
 
 config.Data.inputDBS = 'global'
 # config.Data.splitting = 'Automatic'
-config.Data.splitting = 'FileBased'
+# config.Data.splitting = 'FileBased'
 # config.Data.unitsPerJob = 5 # -- too many failed due to memory problem
-config.Data.unitsPerJob = 1 # -- event per miniAOD file: ~100k -> # jobs for 1M sample: ~10
+# config.Data.unitsPerJob = 1 # -- event per miniAOD file: ~100k -> # jobs for 1M sample: ~10
+
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 50000; # -- 50k
+config.JobType.maxMemoryMB = 3000 # -- several modules in nanoAOD production consumes large memory more than 2000 MB
+
 config.Data.publication = False
 
 config.Data.useParent = True # -- scouting: in AOD
 
 config.Site.storageSite = 'T2_BE_IIHE'
 
-version = 'v01'
+version = 'v01_2nd'
 config.Data.outLFNDirBase = '/store/user/kplee/NanoAOD_SC_MC_2018_%s' % version
 
 config.JobType.allowUndistributedCMSSW = True
@@ -109,7 +114,8 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM'
     crabCommand('submit', config = config)
 
-    # -- W+jets (Madgraph)
-    config.General.requestName = 'WJetsToLNu_aMCNLO'
-    config.Data.inputDataset = '/WJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    # -- already submitted for a test 
+    # # -- W+jets (Madgraph)
+    # config.General.requestName = 'WJetsToLNu_aMCNLO'
+    # config.Data.inputDataset = '/WJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
+    # crabCommand('submit', config = config)
