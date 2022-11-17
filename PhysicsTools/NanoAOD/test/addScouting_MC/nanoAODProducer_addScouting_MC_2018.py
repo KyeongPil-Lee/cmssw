@@ -3,6 +3,10 @@
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: NANO -s NANO --mc --conditions 106X_upgrade2018_realistic_v16_L1v1 --era Run2_2018,run2_nanoAOD_106Xv2 --eventcontent NANOAODSIM --datatier NANOAODSIM --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100 -n -1 --no_exec
+
+# -- run example:
+# -- cmsRun nanoAODProducer_addScouting_MC_2018.py isSignal=true
+
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
@@ -90,8 +94,21 @@ from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEar
 process = customiseEarlyDelete(process)
 # End adding early deletion
 
+from FWCore.ParameterSet.VarParsing import VarParsing
+options = VarParsing('analysis')
+
+options.register('isSignal',
+                  "false", # default value
+                  VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.varType.bool,         # string, int, or float
+                  "is signal DY sample? (if so, remove the cuts on the generator level leptons")
+
+options.parseArguments()
+
+print "isSignal = ", options.isSignal
+
 from PhysicsTools.NanoAOD.custom_scouting_cff import customize_add_scouting
-process = customize_add_scouting(process)
+process = customize_add_scouting(process, options.isSignal)
 
 # process.source.fileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL18MiniAODv2/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/250000/345073B3-0265-AC46-B691-BA3A3B833E3A.root')
 # process.source.secondaryFileNames = cms.untracked.vstring('/store/mc/RunIISummer20UL18RECO/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/AODSIM/106X_upgrade2018_realistic_v11_L1v1-v1/130000/2D6D4E0E-17FC-F54C-9FFA-50EF34656F1A.root')

@@ -1,7 +1,7 @@
 # -- customizer to add the scouting information (Run-2) in nanoAOD production
 import FWCore.ParameterSet.Config as cms
 
-def customize_add_scouting(process):
+def customize_add_scouting(process, isSignal):
     # -- remove error when it runs with AOD
     # -- it will automatically look for the corresponding object in miniAOD
     process.photonMVAValueMapProducer.src = cms.InputTag("")
@@ -22,6 +22,18 @@ def customize_add_scouting(process):
 
     # print process.nanoSequenceCommon
     # print process.nanoAOD_step
+
+    if isSignal:
+        process = removeCuts_genLevel(process)
+
+    return process
+
+# -- remove cuts on the dressed lepton (full phase space for signal DY)
+def removeCuts_genLevel(process):
+
+    process.particleLevel.particleMaxEta = cms.double(9999.0)
+    process.particleLevel.lepMinPt = cms.double(0.0)
+    process.particleLevel.lepMaxEta = cms.double(9999.0)
 
     return process
 

@@ -33,89 +33,107 @@ config.JobType.allowUndistributedCMSSW = True
 # 'MultiCRAB' part
 if __name__ == '__main__':
     
+    from multiprocessing import Process
     from CRABAPI.RawCommand import crabCommand
+    from CRABClient.ClientExceptions import ClientException
+    from httplib import HTTPException
+
+    def submit(config):
+        try:
+            crabCommand('submit', config = config)
+        except HTTPException as hte:
+            print "Failed submitting task: %s" % (hte.headers)
+        except ClientException as cle:
+            print "Failed submitting task: %s" % (cle)
 
     # -- DY, M10-50 (Madgraph)
     config.General.requestName = 'DYJetsToLL_M10to50_Madgraph'
     config.Data.inputDataset = '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM'
-    crabCommand('submit', config = config)
+    config.JobType.pyCfgParams = ["isSignal=true"]
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     # -- DY, M50 (aMCNLO)
     config.General.requestName = 'DYJetsToLL_M50toInf_aMCNLO'
     config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    config.JobType.pyCfgParams = ["isSignal=true"]
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     # -- DY, M50 (MiNNLO)
     config.General.requestName = 'DYJetsToLL_M50toInf_MiNNLO'
     config.Data.inputDataset = '/DYJetsToMuMu_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    config.JobType.pyCfgParams = ["isSignal=true"]
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     # -- J/Psi (for tag and probe test)
     config.General.requestName = 'JPsiToMuMu_JPsiPt8_Pythia8'
     config.Data.inputDataset = '/JpsiToMuMu_JpsiPt8_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    config.JobType.pyCfgParams = ["isSignal=false"]
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     # -- QCD, inclusive
     config.General.requestName = 'QCDMuEnriched_Pt20toInf'
     config.Data.inputDataset = '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     # -- QCD, pT-binned
     config.General.requestName = 'QCDMuEnriched_Pt15to20'
     config.Data.inputDataset = '/QCD_Pt-15To20_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
-
-    config.General.requestName = 'QCDMuEnriched_Pt20to30'
-    config.Data.inputDataset = '/QCD_Pt-20To30_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt30to50'
     config.Data.inputDataset = '/QCD_Pt-30To50_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt50to80'
     config.Data.inputDataset = '/QCD_Pt-50To80_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt80to120'
     config.Data.inputDataset = '/QCD_Pt-80To120_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt120to170'
     config.Data.inputDataset = '/QCD_Pt-120To170_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt170to300'
     config.Data.inputDataset = '/QCD_Pt-170To300_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt300to470'
     config.Data.inputDataset = '/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt470to600'
     config.Data.inputDataset = '/QCD_Pt-470To600_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt600to800'
     config.Data.inputDataset = '/QCD_Pt-600To800_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt800to1000'
     config.Data.inputDataset = '/QCD_Pt-800To1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     config.General.requestName = 'QCDMuEnriched_Pt1000toInf'
     config.Data.inputDataset = '/QCD_Pt-1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     # -- ttbar
     config.General.requestName = 'TTTo2L2Nu_Powheg'
     config.Data.inputDataset = '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM'
-    crabCommand('submit', config = config)
+    p = Process(target=submit, args=(config,)); p.start(); p.join()
 
     # -- already submitted for a test 
     # # -- W+jets (Madgraph)
     # config.General.requestName = 'WJetsToLNu_aMCNLO'
     # config.Data.inputDataset = '/WJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
-    # crabCommand('submit', config = config)
+    #     p = Process(target=submit, args=(config,)); p.start(); p.join()
+
+    # -- makes error if "EventAwareLumiBased" is used due to too large # lumis
+    config.Data.splitting = 'FileBased'
+    config.Data.unitsPerJob = 2
+    config.General.requestName = 'QCDMuEnriched_Pt20to30'
+    config.Data.inputDataset = '/QCD_Pt-20To30_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
+    p = Process(target=submit, args=(config,)); p.start(); p.join()

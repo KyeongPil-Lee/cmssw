@@ -17,14 +17,14 @@ cd PhysicsTools/NanoAOD/test/addScouting_MC
 voms-proxy-init --voms cms
 
 # -- local test
-cmsRun nanoAODProducer_addScouting_MC_2018.py >&nanoAODProducer_addScouting_MC_2018.log& tail -f nanoAODProducer_addScouting_MC_2018.log
+cmsRun nanoAODProducer_addScouting_MC_2018.py isSignal=true >&nanoAODProducer_addScouting_MC_2018.log& tail -f nanoAODProducer_addScouting_MC_2018.log
 
 # -- submit the CRAB jobs
 python crabConfig_MC_2018.py
 
 # -- simple script to check the CRAB jobs status
 # -- only works when your proxy is valid
-python CRAB_Status.py CRABDir
+python CRAB_Status.py
 ```
 
 ## New codes
@@ -35,6 +35,7 @@ python CRAB_Status.py CRABDir
    * Add scouting table in the main nano sequence
    * A line for phothon MVA value map producer to avoid an error when it runs with AOD
    * Modify muon trigger object part to save `DST_DoubleMu3*` path objects
+   * Remove cuts on the generator level leptons if it is a signal (DY) sample
 
 * `plugin/ScoutingDimuonVertexTableProducer.cc`
    * Table producer for the dimuon vertex: save the two muon indices associated to this vertex as well as all basic variables
@@ -77,6 +78,19 @@ cmsDriver.py NANO \
 
 2) open `NANO_NANO.py` and add a few lines at the end for the scouting information
 ```
+from FWCore.ParameterSet.VarParsing import VarParsing
+options = VarParsing('analysis')
+
+options.register('isSignal',
+                  "false", # default value
+                  VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.varType.bool,         # string, int, or float
+                  "is signal DY sample? (if so, remove the cuts on the generator level leptons")
+
+options.parseArguments()
+
+print "isSignal = ", options.isSignal
+
 from PhysicsTools.NanoAOD.custom_scouting_cff import customize_add_scouting
 process = customize_add_scouting(process)
 
