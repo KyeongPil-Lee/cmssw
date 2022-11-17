@@ -32,7 +32,7 @@ def customize_add_scouting(process, isSignal):
 def removeCuts_genLevel(process):
 
     process.particleLevel.particleMaxEta = cms.double(9999.0)
-    process.particleLevel.lepMinPt = cms.double(0.0)
+    process.particleLevel.lepMinPt = cms.double(0.01) # -- reduce leptons with pt=0 (there is a peak)
     process.particleLevel.lepMaxEta = cms.double(9999.0)
 
     return process
