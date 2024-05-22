@@ -2,14 +2,19 @@
 
 ## Purpose
 
-* Add more trigger object information needed for muon fake rate measurement
-  * (Tk)Mu17, 20, 27
+* For DY MC: save full phase space information for the dressed leptons (remove pt & eta cuts)
+* Add branch for the DY-analysis-specific trigger obejcts for a precise matching to the offline muons
 
-## Recipe
+## Recipe (first setup)
+
+* CMSSW_10_6_X: need to use singularity ([link](https://cms-sw.github.io/singularity.html)) under lxplus >= 8
 
 ```shell
 export SCRAM_ARCH=slc7_amd64_gcc700
 cmsrel CMSSW_10_6_30
+
+cmssw-el7 # -- under >lxplus7
+
 cd CMSSW_10_6_30/src
 cmsenv
 # voms-proxy-init --voms cms
@@ -20,17 +25,58 @@ scram b -j 10 >&scram.log
 
 cd PhysicsTools/NanoAOD/test/nanoAOD_DY
 
-source /cvmfs/cms.cern.ch/common/crab-setup.sh
+# source /cvmfs/cms.cern.ch/common/crab-setup.sh
 
 python crabcfg_DATA.py # -- submit CRAB jobs for data
 python crabcfg_MC.py # -- submit CRAB jobs for MC
 ```
 
+## Recipe (working space)
 
+```shell
+cd /afs/cern.ch/user/k/kplee/work/private/Analysis/nanoAOD_trigObj/CMSSW_10_6_30/src/PhysicsTools/NanoAOD/test/nanoAOD_DY
 
-## Files
+export SCRAM_ARCH=slc7_amd64_gcc700
 
-### NanoAOD production configuration (nanoAOD v9, 2016 preAPV)
+cmssw-el7 # -- under >lxplus7
+
+cmsenv
+voms-proxy-init --voms cms
+```
+
+## NanoAOD production configurations (nanoAOD v9)
+
+* Reference: https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Instructions/Private-production
+* Also check the test commands in McM for nanoAOD samples
+
+### Common
+
+Customizer at the end of the configuration
+
+```python
+from FWCore.ParameterSet.VarParsing import VarParsing
+options = VarParsing('analysis')
+
+options.register('isSignal',
+                  "false", # default value
+                  VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.varType.bool,         # string, int, or float
+                  "is signal DY sample? (if so, remove the cuts on the generator level leptons")
+
+options.parseArguments()
+
+print "isSignal = ", options.isSignal
+
+from PhysicsTools.NanoAOD.customizer_nanoAOD_DY import *
+process = customizer_nanoAOD_DY(process, options.isSignal)
+
+# -- test miniAOD samples
+testFile = ""
+process.source.fileNames = cms.untracked.vstring(testFile)
+process.maxEvents.input = cms.untracked.int32(1000)
+```
+
+### 2016 preAPV
 
 * Data
 
@@ -62,12 +108,49 @@ cmsDriver.py  \
 --no_exec --mc -n -1
 ```
 
+### 2018
 
+* Data
 
-* Customizer at the end of the configuration
+```bash
+cmsDriver.py NANO \
+-s NANO --data \
+--conditions 106X_dataRun2_v35 \
+--era Run2_2018,run2_nanoAOD_106Xv2 \
+--eventcontent NANOAOD \
+--datatier NANOAOD \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=1000" \
+-n -1 --no_exec
+mv NANO_NANO.py DYNanoAOD_2018_data.py
 
-```python
-from PhysicsTools.NanoAOD.customizer_nanoAOD_DY import *
-process = customizer_nanoAOD_DY(process)
+# -- add customizer
+# -- test file: /store/data/Run2018D/SingleMuon/MINIAOD/UL2018_MiniAODv2_GT36-v1/610000/19678FA7-BABE-6145-A2D7-40A3E70406FB.root
+cmsRun DYNanoAOD_2018_data.py >&DYNanoAOD_2018_data.log&
+tail -f DYNanoAOD_2018_data.log
 ```
+
+* MC
+
+```bash
+cmsDriver.py NANO \
+-s NANO --mc \
+--conditions 106X_upgrade2018_realistic_v16_L1v1 \
+--era Run2_2018,run2_nanoAOD_106Xv2 \
+--eventcontent NANOAODSIM \
+--datatier NANOAODSIM \
+--customise_commands="process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)));process.MessageLogger.cerr.FwkReport.reportEvery=100" \
+-n -1 --no_exec
+mv NANO_NANO.py DYNanoAOD_2018_mc.py
+
+# -- add customizer
+# -- test file: /store/mc/RunIISummer20UL18MiniAODv2/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/5710A7A1-073E-D14D-9BE0-F661A3179580.root
+cmsRun DYNanoAOD_2018_mc.py isSignal=true >&DYNanoAOD_2018_mc_signal.log&
+tail -f DYNanoAOD_2018_mc_signal.log
+```
+
+
+
+## CRAB configuration
+
+* If you run on CRAB, it is important to add `fakeNameForCrab = cms.untracked.bool(True)` to the configuration of the NanoAODOutputModule in the CMSSW cfg file (and to run a single instance of it - this should normally be the case).
 
