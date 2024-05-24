@@ -104,7 +104,7 @@ options.parseArguments()
 print "isSignal = ", options.isSignal
 
 from PhysicsTools.NanoAOD.customizer_nanoAOD_DY import *
-process = customizer_nanoAOD_DY(process, options.isSignal)
+process = customizer_nanoAOD_DY(process, options.isSignal, True)
 
 # -- test miniAOD samples
 testFile = "/store/mc/RunIISummer20UL18MiniAODv2/DYJetsToMuMu_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/BE954C4F-7A7A-3B4B-8F92-8F5512A25007.root"

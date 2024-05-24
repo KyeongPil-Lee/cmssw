@@ -143,14 +143,30 @@ cmsDriver.py NANO \
 mv NANO_NANO.py DYNanoAOD_2018_mc.py
 
 # -- add customizer
-# -- test file: /store/mc/RunIISummer20UL18MiniAODv2/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/5710A7A1-073E-D14D-9BE0-F661A3179580.root
+# -- test file: /store/mc/RunIISummer20UL18MiniAODv2/DYJetsToMuMu_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/BE954C4F-7A7A-3B4B-8F92-8F5512A25007.root
 cmsRun DYNanoAOD_2018_mc.py isSignal=true >&DYNanoAOD_2018_mc_signal.log&
 tail -f DYNanoAOD_2018_mc_signal.log
+```
+
+* CRAB status check
+
+```bash
+cd /afs/cern.ch/user/k/kplee/work/private/Analysis/nanoAOD_trigObj/CMSSW_10_6_30/src/PhysicsTools/NanoAOD/test/nanoAOD_DY/2018
+
+cmsenv
+voms-proxy-init --voms cms
+
+python CRAB_Status.py -d CRABDir_v1 >&CRAB_Status.log&
 ```
 
 
 
 ## CRAB configuration
 
-* If you run on CRAB, it is important to add `fakeNameForCrab = cms.untracked.bool(True)` to the configuration of the NanoAODOutputModule in the CMSSW cfg file (and to run a single instance of it - this should normally be the case).
+* If you run on CRAB, it is important to add `fakeNameForCrab = cms.untracked.bool(True)` to the configuration of the NanoAODOutputModule in the CMSSW cfg file (and to run a single instance of it - this should normally be the case)
+  * Reflected in the customizer
+
+
+
+
 

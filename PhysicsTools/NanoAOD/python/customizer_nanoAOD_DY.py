@@ -1,10 +1,13 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizer_nanoAOD_DY(process, isSignal = False):
+def customizer_nanoAOD_DY(process, isSignal=False, saveCT18=False):
     process = customizer_add_more_trigObj(process)
 
     if isSignal:
         process = customizer_removeCut_dressedLepton(process)
+
+    if saveCT18:
+        process = customizer_switch_PDFWeight_CT18(process)
 
     # -- recommendation for CRAB running
     if hasattr(process, "NANOAODoutput"): # -- data
@@ -12,6 +15,8 @@ def customizer_nanoAOD_DY(process, isSignal = False):
 
     if hasattr(process, "NANOAODSIMoutput"): # -- MC (SIM)
         process.NANOAODSIMoutput.fakeNameForCrab = cms.untracked.bool(True)
+
+    process = delete_tables(process)
 
     return process
 
@@ -66,6 +71,52 @@ def customizer_removeCut_dressedLepton(process):
 
     return process
 
-def customizer_output_DY(process):
-    
+def customizer_switch_PDFWeight_CT18(process):
+    process.genWeightsTable.preferredPDFs = cms.VPSet( 
+        cms.PSet( name = cms.string("CT18NNLO"), lhaid = cms.uint32(14000) )
+    )
+
+    process.genWeightsTable.debug = cms.untracked.bool(True)
+
+    for pfPDF in process.genWeightsTable.preferredPDFs:
+        print("PDF name = %s, LHAID = %d" % (pfPDF.name, pfPDF.lhaid.value()))
+ 
+    return process
+
+# -- it might be better if relavant calculation modules are removed as well,
+# -- but it is hard to track all the depdendencies
+# -- (e.g. something produced in a module can be called in the other next module, like MET calculation)
+# -- therefore, just drop the table and do not touch the intermediate EDProducer modules
+def delete_tables(process):
+
+    process = delete_table(process, "fatJetTable")
+    # process = delete_table(process, "saJetTable")
+    process = delete_table(process, "tauTable")
+    process = delete_table(process, "boostedTauTable")
+    # process = delete_table(process, "electronTable")
+    # process = delete_table(process, "lowPtElectronTable")
+    # process = delete_table(process, "photonTable")
+    process = delete_table(process, "simpleCleanerTable") # -- make (obj)_cleanmask branch: not needed for us
+    process = delete_table(process, "isoTrackTable")
+    process = delete_table(process, "genJetAK8Table")
+    process = delete_table(process, "genJetAK8FlavourTable")
+    process = delete_table(process, "fatJetMCTable")
+    process = delete_table(process, "genSubJetAK8Table")
+    process = delete_table(process, "subjetMCTable")
+    # process = delete_table(process, "electronMCTable")
+    process = delete_table(process, "tauMCTable")
+    process = delete_table(process, "lowPtElectronMCTable")
+    # process = delete_table(process, "photonMCTable")
+    process = delete_table(process, "genVisTauTable")
+    process = delete_table(process, "boostedTauMCTable")
+    process = delete_table(process, "HTXSCategoryTable")
+    process = delete_table(process, "ttbarCategoryTable")
+
+    return process
+
+def delete_table(process, tableName):
+
+    if hasattr(process, tableName):
+        delattr(process, tableName)
+
     return process
