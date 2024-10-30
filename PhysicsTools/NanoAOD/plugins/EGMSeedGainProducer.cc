@@ -42,6 +42,7 @@ public:
     recHitsEE_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("recHitsEE")))
   {
     produces<edm::ValueMap<int>>();
+    produces<edm::ValueMap<bool>>("isOOT");
   }
     ~EGMSeedGainProducer() override {};
 
@@ -84,6 +85,7 @@ EGMSeedGainProducer<T>::produce(edm::StreamID streamID, edm::Event& iEvent, cons
 
   unsigned nSrc = src->size();
   std::vector<int> gainSeed(nSrc,12);
+  std::vector<bool> isOOT(nSrc, false);
 
   // determine gain of seed crystal as in RecoEgamma/EgammaTools/src/PhotonEnergyCalibrator.cc
   for (unsigned i = 0; i<nSrc; i++){
@@ -94,6 +96,7 @@ EGMSeedGainProducer<T>::produce(edm::StreamID streamID, edm::Event& iEvent, cons
     if (seed != coll->end()) {
       if (seed->checkFlag(EcalRecHit::kHasSwitchToGain6)) gainSeed[i]=6;
       if (seed->checkFlag(EcalRecHit::kHasSwitchToGain1)) gainSeed[i]=1;
+      if (seed->checkFlag(EcalRecHit::kOutOfTime) )       isOOT[i] = true;
     }
   }
 
@@ -103,6 +106,11 @@ EGMSeedGainProducer<T>::produce(edm::StreamID streamID, edm::Event& iEvent, cons
   fillerCorr.fill();
   iEvent.put(std::move(gainSeedV));
 
+  std::unique_ptr<edm::ValueMap<bool>> isOOTV(new edm::ValueMap<bool>());
+  edm::ValueMap<bool>::Filler fillerCorr_isOOT(*isOOTV);
+  fillerCorr_isOOT.insert(src,isOOT.begin(),isOOT.end());
+  fillerCorr_isOOT.fill();
+  iEvent.put(std::move(isOOTV), "isOOT");
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
