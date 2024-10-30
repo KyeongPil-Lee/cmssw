@@ -4,6 +4,9 @@
 
 * For DY MC: save full phase space information for the dressed leptons (remove pt & eta cuts)
 * Add branch for the DY-analysis-specific trigger obejcts for a precise matching to the offline muons
+* Add `Electron_isOOT` branch to check the effect of electrons made from the out-of-time seed
+  * By updating `plugins/EGMSeedGainProducer.cc` and `python/electrons_cff.py`
+
 
 ## Recipe (first setup)
 
@@ -23,12 +26,14 @@ git cms-merge-topic KyeongPil-Lee:10_6_30_nAODv9_forDY
 
 scram b -j 10 >&scram.log
 
-cd PhysicsTools/NanoAOD/test/nanoAOD_DY
-
+#cd PhysicsTools/NanoAOD/test/nanoAOD_DY
 # source /cvmfs/cms.cern.ch/common/crab-setup.sh
+# python crabcfg_DATA.py # -- submit CRAB jobs for data
+# python crabcfg_MC.py # -- submit CRAB jobs for MC
 
-python crabcfg_DATA.py # -- submit CRAB jobs for data
-python crabcfg_MC.py # -- submit CRAB jobs for MC
+cd PhysicsTools/NanoAOD/test
+# -- local test
+cmsRun nanoAOD_DY/2018/isOOT/DYNanoAOD_2018_data.py >&DYNanoAOD_2018_data.log& tail -f DYNanoAOD_2018_data.log
 ```
 
 ## Recipe (working space)
