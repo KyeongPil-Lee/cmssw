@@ -22,9 +22,11 @@ cd CMSSW_10_6_30/src
 cmsenv
 # voms-proxy-init --voms cms
 
+git cms-init
+
 git cms-merge-topic KyeongPil-Lee:10_6_30_nAODv9_forDY
 
-scram b -j 10 >&scram.log
+scram b -j 10 >&scram.log&
 
 #cd PhysicsTools/NanoAOD/test/nanoAOD_DY
 # source /cvmfs/cms.cern.ch/common/crab-setup.sh
@@ -33,7 +35,20 @@ scram b -j 10 >&scram.log
 
 cd PhysicsTools/NanoAOD/test
 # -- local test
-cmsRun nanoAOD_DY/2018/isOOT/DYNanoAOD_2018_data.py >&DYNanoAOD_2018_data.log& tail -f DYNanoAOD_2018_data.log
+# -- data
+cmsRun nanoAOD_DY/2018/isOOT/DYNanoAOD_2018_data.py >&DYNanoAOD_2018_data.log& 
+tail -f DYNanoAOD_2018_data.log
+# -- MC
+cmsRun nanoAOD_DY/2018/isOOT/DYNanoAOD_2018_mc.py >&DYNanoAOD_2018_mc.log& 
+tail -f DYNanoAOD_2018_mc.log
+
+# -- CRAB submit
+cd nanoAOD_DY/2018/isOOT
+python crabcfg_DATA.py
+python crabcfg_MC.py
+
+# -- CRAB status check
+python CRAB_Status.py -d CRABDir_v4
 ```
 
 ## Recipe (working space)
